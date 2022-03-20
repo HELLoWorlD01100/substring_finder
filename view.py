@@ -38,8 +38,7 @@ class View:
             self._side_panel.pattern_entry.insert(1, self._model.pattern)
         # Получить функцию-алгоритм исходя из выбора пользователя
         current_alg = self._side_panel.algorithms_box.get()
-        self._model.current_algorithm = self._model.select_algorithm(
-            current_alg)
+        self._model.set_algorithm(current_alg)
         # Заблокировать запись подстроки
         self._side_panel.pattern_entry['state'] = 'disabled'
         # Заблокировать запись текста (строки)
@@ -57,7 +56,7 @@ class View:
 
     def __finish_button_act__(self):
         # Чистим найденные вхождения
-        self._model.found_substrings_indexes = []
+        self._model._found_substrings_indexes = []
         # Разблокировать ввод подстроки
         self._side_panel.pattern_entry['state'] = 'normal'
         # Разблокировать ввод текста (строки)
@@ -78,17 +77,17 @@ class View:
         # Удаляем все теги предыдущих "текущих" индексов
         self._side_panel.text.tag_remove('goldbackground', 1.0, 'end')
         # Применяем выбранный алгоритм
-        self._model.current_algorithm()
+        data = self._model.current_algorithm.pass_one_step()
         # Добавляем теги для найденных индексов (окрашиваем в красный)
-        for i in self._model.found_substrings_indexes:
+        for i in data.found_indexes:
             self._side_panel.text.tag_add('redforeground',
                                           f'1.0+{i}c',
                                           f'1.0+{i + len(self._model.pattern)}c')
         # Добавляем теги для текущих индексов (окрашиваем в жёлтый)
-        for i in self._model.current_indexes:
+        for i in data.current_indexes:
             self._side_panel.text.tag_add('goldbackground', f'1.0+{i}c')
         # Если алгоритм закончил работу, то блок-м кнопку применения алгоритма
-        if self._model.string_is_over:
+        if data.is_over:
             self._side_panel.button_move['state'] = 'disabled'
 
     def _clear(self):

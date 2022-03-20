@@ -2,6 +2,7 @@ from algorithms.brut_force import BrutForceAlgorithm
 from algorithms.knuth_morris_pratt import KnuthMorrisPrattAlgorithm
 from algorithms.boyer_moore import BoyerMooreAlgorithm
 from algorithms.rabin_karp import RabinKarpAlgorithm
+from algorithms.interface_algorithm import i_algorithm
 
 
 class Model:
@@ -9,17 +10,15 @@ class Model:
         self.current_algorithm = ''
         self.string = ''
         self.pattern = ''
-        self.current_indexes = ()
-        self.found_substrings_indexes = []
-        self.string_is_over = False
 
-    def select_algorithm(self, algorithm_name):
+    def set_algorithm(self, algorithm_name):
         if algorithm_name == 'Brut Force':
-            return BrutForceAlgorithm(self).one_step_algorithm
-        if algorithm_name == 'Rabin-Karp':
-            return RabinKarpAlgorithm(self).one_step_algorithm
-        if algorithm_name == 'Boyer-Moore':
-            return BoyerMooreAlgorithm(self).one_step_algorithm
-        if algorithm_name == 'Knuth-Morris-Pratt':
-            return KnuthMorrisPrattAlgorithm(self).one_step_algorithm
-        raise NameError("Алгоритма с таким именем нету")
+            self.current_algorithm = BrutForceAlgorithm(self.string, self.pattern)
+        elif algorithm_name == 'Rabin-Karp':
+            self.current_algorithm = RabinKarpAlgorithm(self.string, self.pattern)
+        elif algorithm_name == 'Boyer-Moore':
+            self.current_algorithm = BoyerMooreAlgorithm(self.string, self.pattern)
+        elif algorithm_name == 'Knuth-Morris-Pratt':
+            self.current_algorithm = KnuthMorrisPrattAlgorithm(self.string, self.pattern)
+        else:
+            raise NameError("Алгоритма с таким именем нету")
